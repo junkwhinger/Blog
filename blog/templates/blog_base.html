@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="kr">
+<head>
+    <meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}Blog Application{% endblock title %}</title>
+
+    {% load staticfiles %}
+    <!-- Bootstrap & Flat UI & jQuery import -->
+    <link href="{% static 'css/vendor/bootstrap.min.css' %}" rel="stylesheet">
+    <link href="{% static 'css/flat-ui.css' %}" rel="stylesheet">
+</head>
+<body>
+    <!-- Content -->
+    {% block contents %}
+
+    {% endblock contents %}
+    <!-- Js -->
+    <script src="{% static 'js/vendor/jquery.min.js' %}"></script>
+    <script src="{% static 'js/flat-ui.min.js' %}"></script>
+</body>
+</html>

@@ -1,0 +1,60 @@
+{% extends "blog_base.html" %}
+
+{% block contents %}
+    <div class="container-fluid">
+        <!-- Template file -->
+        <div class="row">
+            <div class="col-md-12">
+                <div class="page-header">
+                    <h3><mark class="alert-info">Template: update.html</mark></h3>
+                </div>
+            </div>
+        </div>
+        <!-- Post form -->
+        <div class="row">
+            <div class="col-md-12">
+                {# Post Update #}
+                {% if post %}
+                <form role="form" method="POST" action="{% url 'blog:update' post.pk %}">
+                {# Post Register #}
+                {% else %}
+                <form role="form" method="POST" action="{% url 'blog:create' %}">
+                {% endif %}
+                {% csrf_token %}
+                    <div class="form-group">
+                        <label for="post_title_input">Title</label>
+                        <input type="text" class="form-control" name="post_title" value="{{ post.title }}"/>
+                    </div>
+                    <div class="form-group">
+                        <label for="post_category_input">Category</label>
+                        <select class="form-control" name="post_category">
+                            {% for category in categories %}
+                            <option value="{{ category.pk }}" {% if category == post.category %}selected{% endif %}>{{ category.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="post_writer_input">Writer</label>
+                        <input type="text" class="form-control" name="post_writer" value="{{ post.writer }}"/>
+                    </div>
+                    <div class="form-group">
+                        <label for="post_content_input">Content</label>
+                        <textarea value class="form-control" rows="15" name="post_content">{{ post.content }}</textarea>
+                    </div>
+                    <div class="form-group tagsinput-default">
+                        <label for="post_tags_input">Tags</label>
+                        <input name="post_tags" class="bootstrap-tagsinput" data-role="tagsinput" value="{% for tag in post.tags.all %}{{ tag.name }}{% if not forloop.last %}, {% endif %}{% endfor %}" />
+                    </div>
+                    <div class="form-group" align="right">
+                        {% if post %}
+                        <a href="{% url 'blog:view' post.pk %}" type="submit" class="btn btn-danger">Cancel</a>
+                        {% else %}
+                        <a href="{% url 'blog:list' %}" type="submit" class="btn btn-danger">Cancel</a>
+                        {% endif %}
+                        <button type="submit" class="btn btn-primary">Save Post</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock contents %}

@@ -1,0 +1,59 @@
+{% extends "blog_base.html" %}
+
+{% block contents %}
+    <div class="container-fluid">
+        <!-- Template file -->
+        <div class="row">
+            <div class="col-md-12">
+                <div class="page-header">
+                    <h3><mark class="alert-info">Template: list.html</mark></h3>
+                </div>
+            </div>
+        </div>
+        <!-- Button -->
+        <div class="row">
+            <div class="col-md-12">
+                <div class="form-group" align="right">
+                    <a href="{% url 'blog:create' %}" type="submit" class="btn btn-primary">Write a New Post</a>
+                </div>
+            </div>
+        </div>
+        <!-- List of posts -->
+        {% for post in page_info.post_in_page %}
+        <div class="row">
+            <div class="col-md-12">
+                <h4><a href="{% url "blog:view" post.pk %}">{{ post.title }}</a></h4>
+                <dl class="dl-horizontal">
+                    <dt>Category</dt>
+                    <dd>{{ post.category.name|safe }}</dd>
+                    <dt>Writer</dt>
+                    <dd>{{ post.writer|safe }}</dd>
+                    <dt>Created at</dt>
+                    <dd>{{ post.created_at|date:"Y/m/j H:i" }}</dd>
+                </dl>
+                <p>{{ post.content|slice:"0:300"|add:" ..."|safe }}</p>
+            </div>
+        </div>
+        <br>
+        {% empty %}
+        <div class="row">
+            <div class="col-md-12">
+                <h3>No post!</h3>
+            </div>
+        </div>
+        <br>
+        {% endfor %}
+        <!-- Paginator -->
+        <div class="row">
+            <div class="col-md-12 pagination pagination-lg" align="middle">
+                <ul>
+                    <li class="previous{% if not page_info.has_previous %} disabled{% endif %}"><a {% if page_info.has_previous %}href="?page={{ page_info.page_current|add:'-1' }}"{% endif %} class="fui-arrow-left"></a></li>
+                    {% for page in page_info.page_range %}
+                        <li{% if page == page_info.page_current %} class="active"{% endif %}><a href="{% if page == page_info.page_current %}#{% else %}?page={{ page }}{% endif %}">{{ page }}</a></li>
+                    {% endfor %}
+                    <li class="next{% if not page_info.has_next %} disabled{% endif %}"><a {% if page_info.has_next %}href="?page={{ page_info.page_current|add:'1' }}"{% endif %} class="fui-arrow-right"></a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+{% endblock contents %}

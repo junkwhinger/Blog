@@ -1,0 +1,45 @@
+{% extends "blog_base.html" %}
+
+{% block contents %}
+    {{ method }}
+    <div class="container-fluid">
+        <!-- Template file -->
+        <div class="row">
+            <div class="col-md-12">
+                <div class="page-header">
+                    <h3><mark class="alert-info">Template: view.html</mark></h3>
+                </div>
+            </div>
+        </div>
+        <!-- Buttons -->
+        <div class="row">
+            <div class="col-md-6" align="left">
+                <a href="{% url 'blog:list' %}" class="btn btn-warning">See the List</a>
+            </div>
+            <div class="col-md-6" align="right">
+                <a href="{% url 'blog:update' post.pk %}" class="btn btn-primary">Update this Post</a>
+                <a href="{% url 'blog:delete_post' %}?pk={{ post.pk }}" class="btn btn-danger">Delete this Post</a>
+            </div>
+        </div>
+        <!-- Post -->
+        <div class="row">
+            <div class="col-md-12">
+                <h3>{{ post.title }}</h3>
+                <dl class="dl-horizontal">
+                    <dt>Category</dt>
+                    <dd>{{ post.category.name|safe }}</dd>
+                    <dt>Writer</dt>
+                    <dd>{{ post.writer|safe }}</dd>
+                    <dt>Created at</dt>
+                    <dd>{{ post.created_at|date:"Y/m/j H:i" }}</dd>
+                </dl>
+                <pre style="border-width: 0"><p>{{ post.content|slice:"0:800"|add:" ..."|safe }}</p></pre>
+            </div>
+        </div>
+        <!-- Tags -->
+        {% include "tags.html" %}
+        <br />
+        <!-- Comments -->
+        {% include "comment.html" %}
+    </div>
+{% endblock contents %}

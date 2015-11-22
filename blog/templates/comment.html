@@ -1,0 +1,34 @@
+        {# Post variable is needed! #}
+        <!-- Comments Output -->
+        <div class="row">
+            <div class="col-md-12">
+                <h4>Comments</h4>
+                <dl class="dl-horizontal">
+                    {% for comment in post.comment_set.all %}
+                    <dt>{{ comment.writer|safe }}</dt>
+                    <dd>{{ comment.content|safe }}
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        <a href="{% url 'blog:delete_comment' %}?pk={{ comment.pk }}"><span class="fui-cross"></span></a>
+                    </dd>
+                    {% empty %}
+                    <dt></dt>
+                    <dd>Please be the first commend-er!</dd>
+                    {% endfor %}
+                </dl>
+            </div>
+        </div>
+        <!-- Comment Input -->
+        <div class="row">
+            <div class="col-md-12">
+                <dl class="dl-horizontal">
+                    <form method="POST" action="{% url 'blog:view' post.pk %}">
+                        {% csrf_token %}
+                        <dt class="form-group"><input type="text" value placeholder="Your name" class="form-control" name="comment_writer"></dt>
+                        <dd class="form-group"><textarea value placeholder="Comment here" class="form-control" name="comment_content"></textarea></dd>
+                        <div align="right" class="form-group">
+                            <input type="submit" value="Save Comment" class="btn btn-primary" />
+                        </div>
+                    </form>
+                </dl>
+            </div>
+        </div>

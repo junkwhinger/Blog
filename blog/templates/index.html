@@ -1,0 +1,30 @@
+{% extends "blog_base.html" %}
+
+{% block contents %}
+    <div class="container-fluid">
+        <!-- Template file -->
+        <div class="row">
+            <div class="col-md-12">
+                <div class="page-header">
+                    <h3><mark class="alert-info">Template: index.html</mark></h3>
+                </div>
+            </div>
+        </div>
+        <!-- Hello, world! -->
+        <div class="row">
+            <div class="col-md-12">
+                <div class="inner cover">
+                    <h1 class="cover-heading">Hello, world!</h1>
+                    <br />
+                    <p class="lead">Here is the first view & template application of Django. It's little bit difficult, but very interesting.</p>
+                    <p class="lead">Click <strong></strong></string><a href="{% url "blog:list" %}">HERE</a></strong> to see the list of posts.</p>
+                </div>
+                <div class="mastfoot">
+                    <div class="inner" align="middle">
+                        <p>Cover template for Bootstrap</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock contents %}
