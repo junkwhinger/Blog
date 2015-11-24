@@ -5,6 +5,7 @@ from django.core.paginator import Paginator
 from django.core.paginator import EmptyPage
 from django.core.paginator import PageNotAnInteger
 from django.core.urlresolvers import reverse
+from django.http import Http404
 
 from .models import Category
 from .models import Post
@@ -21,7 +22,7 @@ def index_blog(request):
 def list_posts(request):
     # URI: /blog/list/
     # Post 들의 리스트 출력
-    per_page = 3
+    per_page = 5
     page = request.GET.get('page', 1)
     paginator = Paginator(Post.objects.all().order_by('-created_at'), per_page)
 
@@ -53,10 +54,17 @@ def view_post(request, pk):
     if request.method == 'GET':
         return render(request, 'view.html', {'post': post, })
     elif request.method == 'POST':
-        comment_writer = request.POST['comment_writer']
-        comment_content = request.POST['comment_content']
-        comment = Comment(writer=comment_writer, content=comment_content, post=post)
-        comment.save()
+        comment_writer = request.POST.get('comment_writer')
+        comment_content = request.POST.get('comment_content')
+
+        # comment_writer, comment_content 중 빈 값이 있다면 등록하지 않는다.
+        if comment_writer and comment_content:
+            comment = Comment(
+                writer=comment_writer,
+                content=comment_content,
+                post=post
+            )
+            comment.save()
 
         return redirect(reverse('blog:view', kwargs={'pk': post.pk, }))
 
@@ -68,20 +76,54 @@ def update_post(request, pk=None):
     if request.method == 'GET':
         categories = Category.objects.all()
 
-        if pk is not None:
+        if pk:
             post = Post.objects.get(pk=pk)
-            return render(request, 'update.html', {'categories': categories, 'post': post, })
+            return render(
+                request,
+                'update.html',
+                {'categories': categories, 'post': post, }
+            )
         else:
-            return render(request, 'update.html', {'categories': categories, })
+            return render(
+                request,
+                'update.html',
+                {'categories': categories, }
+            )
     elif request.method == 'POST':
-        if pk is None:
-            title = request.POST['post_title']
-            category = Category.objects.get(pk=int(request.POST['post_category']))
-            writer = request.POST['post_writer']
-            content = request.POST['post_content']
-            tags = list(map(str.strip, request.POST['post_tags'].split(',')))
+        # 필수 데이터들의 유효성을 확인한다. 오류가 발생하면 404 페이지로 redirect 한다.
+        try:
+            title = request.POST.get('post_title')
+            category = Category.objects.get(
+                pk=int(request.POST.get('post_category'))
+            )
+            writer = request.POST.get('post_writer')
+            content = request.POST.get('post_content')
+        except:
+            raise Http404('Necessary info to upload post is insufficient.')
 
-            post = Post(title=title, category=category, writer=writer, content=content)
+        # title, category, writer, content 중 하나라도 없다면 등록하지 않고 리스트 화면으로 간다.
+        if title and category and writer and content:
+            tags = list(
+                map(str.strip, request.POST.get('post_tags', '').split(','))
+            )
+
+            # pk 가 있다면 기존 post 에서 불러오고, 없다면 방금 입력된 내용으로 post 를 만든다.
+            if pk:
+                post = Post.objects.get(pk=pk)
+
+                for post_tag in post.tags.all():
+                    post.tags.remove(post_tag)
+
+                post.title, post.category = title, category
+                post.writer, post.content = writer, content
+            else:
+                post = Post(
+                    title=title,
+                    category=category,
+                    writer=writer,
+                    content=content
+                )
+
             post.save()
 
             for tag_name in tags:
@@ -90,31 +132,8 @@ def update_post(request, pk=None):
                 post.tags.add(tag)
 
             return redirect(reverse('blog:view', kwargs={'pk': post.pk, }))
-        elif pk is not None:
-            title = request.POST['post_title']
-            category = Category.objects.get(pk=int(request.POST['post_category']))
-            writer = request.POST['post_writer']
-            content = request.POST['post_content']
-            tags = list(map(str.strip, request.POST['post_tags'].split(',')))
-
-            post = Post.objects.get(pk=pk)
-            post.title = title
-            post.category = category
-            post.writer = writer
-            post.content = content
-            post.save()
-
-            for post_tag in post.tags.all():
-                post.tags.remove(post_tag)
-
-            for tag_name in tags:
-                tag = Tag(name=tag_name)
-                tag.save()
-                post.tags.add(tag)
-
-            return redirect(reverse('blog:view', kwargs={'pk': post.pk, }))
-    else:
-        pass
+        else:
+            return redirect(reverse('blog:list'))
 
 
 def delete_post(request):
@@ -122,7 +141,7 @@ def delete_post(request):
     # 1개 Post 삭제하고 리스트 화면으로 Redirect
     pk = request.GET.get('pk', None)
 
-    if pk is not None:
+    if pk:
         post = Post.objects.get(pk=pk)
         post.delete()
 
@@ -135,7 +154,7 @@ def delete_comment(request):
     pk = request.GET.get('pk', None)
     post_pk = None
 
-    if pk is not None:
+    if pk:
         comment = Comment.objects.get(pk=pk)
         post_pk = comment.post.pk
         comment.delete()
