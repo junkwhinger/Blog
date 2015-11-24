@@ -126,9 +126,14 @@ def update_post(request, pk=None):
 
             post.save()
 
+            # tag 를 만들고, post 에 연결한다.
             for tag_name in tags:
-                tag = Tag(name=tag_name)
-                tag.save()
+                if not Tag.objects.filter(name=tag_name).exists():
+                    tag = Tag(name=tag_name)
+                    tag.save()
+                else:
+                    tag = Tag.objects.filter(name=tag_name).first()
+
                 post.tags.add(tag)
 
             return redirect(reverse('blog:view', kwargs={'pk': post.pk, }))

@@ -31,7 +31,7 @@
                     <dt>Created at</dt>
                     <dd>{{ post.created_at|date:"Y/m/j H:i" }}</dd>
                 </dl>
-                <p>{{ post.content|slice:"0:300"|add:" ..."|safe }}</p>
+                <pre style="border-width: 0"><p>{{ post.content|slice:"0:100"|add:" ..."|safe|escape }}</p></pre>
             </div>
         </div>
         <br>

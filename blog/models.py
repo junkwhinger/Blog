@@ -14,7 +14,7 @@ class Post(models.Model):
     writer = models.CharField(max_length=50)
 
     category = models.ForeignKey(Category)
-    tags = models.ManyToManyField('Tag', null=True, blank=True)
+    tags = models.ManyToManyField('Tag', blank=True)
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -37,7 +37,7 @@ class Comment(models.Model):
 
 
 class Tag(models.Model):
-    name = models.CharField(max_length=30, db_index=True)
+    name = models.CharField(max_length=30, db_index=True, unique=True)
 
     def __str__(self):
         return 'Tag {}: {}'.format(self.pk, self.name)
