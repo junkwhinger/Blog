@@ -6,16 +6,21 @@
 
     {% load staticfiles %}
     <!-- Bootstrap & Flat UI & jQuery import -->
+    <script src="{% static 'js/vendor/jquery.min.js' %}"></script>
+    <script src="{% static 'js/flat-ui.min.js' %}"></script>
+
     <link href="{% static 'css/vendor/bootstrap.min.css' %}" rel="stylesheet">
     <link href="{% static 'css/flat-ui.css' %}" rel="stylesheet">
+
+    <!-- Custom Script import -->
+    {% block add_static %}
+
+    {% endblock add_static %}
 </head>
 <body>
     <!-- Content -->
     {% block contents %}
 
     {% endblock contents %}
-    <!-- Js -->
-    <script src="{% static 'js/vendor/jquery.min.js' %}"></script>
-    <script src="{% static 'js/flat-ui.min.js' %}"></script>
 </body>
 </html>

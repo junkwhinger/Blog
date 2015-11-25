@@ -1,5 +1,10 @@
 {% extends "blog_base.html" %}
 
+{% block add_static %}
+    {% load static %}
+    <script src="{% static 'js/view.js' %}"></script>
+{% endblock add_static %}
+
 {% block contents %}
     <div class="container-fluid">
         <!-- Template file -->
@@ -13,11 +18,11 @@
         <!-- Buttons -->
         <div class="row">
             <div class="col-md-6" align="left">
-                <a href="{% url 'blog:list' %}" class="btn btn-warning">See the List</a>
+                <a href="{% url 'blog:list' %}" class="btn btn-warning" id="list">See the List</a>
             </div>
             <div class="col-md-6" align="right">
-                <a href="{% url 'blog:update' post.pk %}" class="btn btn-primary">Update this Post</a>
-                <a href="{% url 'blog:delete_post' %}?pk={{ post.pk }}" class="btn btn-danger">Delete this Post</a>
+                <a href="{% url 'blog:update' post.pk %}" class="btn btn-primary" id="update">Update this Post</a>
+                <a href="{% url 'blog:delete_post' %}?pk={{ post.pk }}" class="btn btn-danger" id="delete">Delete this Post</a>
             </div>
         </div>
         <!-- Post -->
