@@ -43,7 +43,13 @@ def list_posts(request):
         'has_next': posts_in_page.has_next(),
     }
 
-    return render(request, 'list.html', {'page_info': paginator_info, })
+    after_del = request.GET.get('after_del', False)
+
+    return render(
+        request,
+        'list.html',
+        {'page_info': paginator_info, 'after_del':after_del, }
+    )
 
 
 def view_post(request, pk):
@@ -150,7 +156,7 @@ def delete_post(request):
         post = Post.objects.get(pk=pk)
         post.delete()
 
-    return redirect(reverse('blog:list'))
+    return redirect(reverse('blog:list')+'?after_del=True')
 
 
 def delete_comment(request):
