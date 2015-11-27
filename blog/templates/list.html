@@ -10,13 +10,16 @@
                 </div>
             </div>
         </div>
-        <!-- Delete Warning -->
-        {% if after_del %}
-        <div class="row">
+        <!-- Message -->
+        {% if message %}
+        {% load static %}
+        <script src="{% static 'js/message.js' %}"></script>
+
+        <div class="row" id="message">
             <div class="col-md-12">
                 <div class="alert alert-dismissable alert-warning">
                     <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-                    Your post is deleted.
+                    {{ message }}
                 </div>
             </div>
         </div>

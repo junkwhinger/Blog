@@ -1,12 +1,27 @@
 {% extends "blog_base.html" %}
 
-{% block add_static %}
-    {% load static %}
-    <script src="{% static 'js/view.js' %}"></script>
-{% endblock add_static %}
-
 {% block contents %}
     <div class="container-fluid">
+        <!-- Delete Confirm -->
+        <div class="modal fade" tabindex="-1" role="dialog" id="delete-confirm">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                        <h4 class="modal-title">Delete Confirmation</h4>
+                    </div>
+                    <div class="modal-body">
+                        <p>Do you want to delete really?</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        <a href="{% url 'blog:delete_post' %}?pk={{ post.pk }}"><button type="button" class="btn btn-danger">Delete</button></a>
+                    </div>
+                </div>
+            </div>
+        </div>
         <!-- Template file -->
         <div class="row">
             <div class="col-md-12">
@@ -18,11 +33,12 @@
         <!-- Buttons -->
         <div class="row">
             <div class="col-md-6" align="left">
-                <a href="{% url 'blog:list' %}" class="btn btn-warning" id="list">See the List</a>
+                <a href="{% url 'blog:list' %}" class="btn btn-warning">See the List</a>
             </div>
             <div class="col-md-6" align="right">
-                <a href="{% url 'blog:update' post.pk %}" class="btn btn-primary" id="update">Update this Post</a>
-                <a href="{% url 'blog:delete_post' %}?pk={{ post.pk }}" class="btn btn-danger" id="delete">Delete this Post</a>
+                <a href="{% url 'blog:update' post.pk %}" class="btn btn-primary">Update this Post</a>
+                {# <a href="{% url 'blog:delete_post' %}?pk={{ post.pk }}" class="btn btn-danger" data-toggle="modal" data-target="#delete-confirm">Delete this Post</a> #}
+                <a class="btn btn-danger" data-toggle="modal" data-target="#delete-confirm">Delete this Post</a>
             </div>
         </div>
         <!-- Post -->
@@ -37,7 +53,7 @@
                     <dt>Created at</dt>
                     <dd>{{ post.created_at|date:"Y/m/j H:i" }}</dd>
                 </dl>
-                <pre style="border-width: 0"><p>{{ post.content|slice:"0:800"|add:" ..."|safe }}</p></pre>
+                <pre style="border-width: 0"><p>{{ post.content|slice:"0:800"|safe }}</p></pre>
             </div>
         </div>
         <!-- Tags -->
@@ -46,4 +62,7 @@
         <!-- Comments -->
         {% include "comment.html" %}
     </div>
+
+    {% load static %}
+    <script src="{% static 'js/view.js' %}"></script>
 {% endblock contents %}

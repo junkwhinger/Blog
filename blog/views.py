@@ -43,12 +43,14 @@ def list_posts(request):
         'has_next': posts_in_page.has_next(),
     }
 
-    after_del = request.GET.get('after_del', False)
+    message = request.GET.get('after_del')
+    if message:
+        message = 'Your post is deleted successfully.'
 
     return render(
         request,
         'list.html',
-        {'page_info': paginator_info, 'after_del':after_del, }
+        {'page_info': paginator_info, 'message': message, }
     )
 
 
