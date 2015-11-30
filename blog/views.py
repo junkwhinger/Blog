@@ -6,6 +6,7 @@ from django.core.paginator import EmptyPage
 from django.core.paginator import PageNotAnInteger
 from django.core.urlresolvers import reverse
 from django.http import Http404
+from django.contrib.auth.decorators import login_required
 
 from .models import Category
 from .models import Post
@@ -62,21 +63,28 @@ def view_post(request, pk):
     if request.method == 'GET':
         return render(request, 'view.html', {'post': post, })
     elif request.method == 'POST':
-        comment_writer = request.POST.get('comment_writer')
-        comment_content = request.POST.get('comment_content')
+        # comment_writer = request.POST.get('comment_writer')
 
-        # comment_writer, comment_content 중 빈 값이 있다면 등록하지 않는다.
-        if comment_writer and comment_content:
-            comment = Comment(
-                writer=comment_writer,
-                content=comment_content,
-                post=post
-            )
-            comment.save()
+        @login_required
+        def create_comment(request):
+            comment_writer = request.user
+            comment_content = request.POST.get('comment_content')
 
-        return redirect(reverse('blog:view', kwargs={'pk': post.pk, }))
+            # comment_writer, comment_content 중 빈 값이 있다면 등록하지 않는다.
+            if comment_writer and comment_content:
+                comment = Comment(
+                    writer=comment_writer,
+                    content=comment_content,
+                    post=post
+                )
+                comment.save()
+
+            return redirect(reverse('blog:view', kwargs={'pk': post.pk, }))
+
+        return create_comment(request)
 
 
+@login_required
 def update_post(request, pk=None):
     # URI: /blog/update
     # GET: 글 등록/수정하는 페이지, pk 여부에 따라 등록인지 수정인지 판단한다.
@@ -104,7 +112,8 @@ def update_post(request, pk=None):
             category = Category.objects.get(
                 pk=int(request.POST.get('post_category'))
             )
-            writer = request.POST.get('post_writer')
+            # writer = request.POST.get('post_writer')
+            writer = request.user
             content = request.POST.get('post_content')
         except:
             raise Http404('Necessary info to upload post is insufficient.')
@@ -149,6 +158,7 @@ def update_post(request, pk=None):
             return redirect(reverse('blog:list'))
 
 
+@login_required
 def delete_post(request):
     # URI: /blog/delete/post
     # 1개 Post 삭제하고 리스트 화면으로 Redirect
@@ -161,6 +171,7 @@ def delete_post(request):
     return redirect(reverse('blog:list')+'?after_del=True')
 
 
+@login_required
 def delete_comment(request):
     # URI: /blog/delete/comment
     # 1개 Comment 삭제하고 Post 조회 화면으로 Redirect

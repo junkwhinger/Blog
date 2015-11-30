@@ -1,4 +1,5 @@
 from django.db import models
+from django.conf import settings
 
 
 class Category(models.Model):
@@ -11,7 +12,8 @@ class Category(models.Model):
 class Post(models.Model):
     title = models.CharField(max_length=100)
     content = models.TextField()
-    writer = models.CharField(max_length=50)
+    # writer = models.CharField(max_length=50)
+    writer = models.ForeignKey(settings.AUTH_USER_MODEL, null=True)
 
     category = models.ForeignKey(Category)
     tags = models.ManyToManyField('Tag', blank=True)
@@ -25,7 +27,8 @@ class Post(models.Model):
 
 class Comment(models.Model):
     content = models.TextField(max_length=200)
-    writer = models.CharField(max_length=50)
+    # writer = models.CharField(max_length=50)
+    writer = models.ForeignKey(settings.AUTH_USER_MODEL, null=True)
 
     post = models.ForeignKey(Post, null=True, blank=True)
     parent_comment = models.ForeignKey('Comment', null=True, blank=True)

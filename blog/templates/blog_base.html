@@ -13,6 +13,57 @@
     <link href="{% static 'css/flat-ui.css' %}" rel="stylesheet">
 </head>
 <body>
+    {% block login_form %}
+    <div class="modal fade" tabindex="-1" role="dialog" id="login">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <form method="POST" action="{% url 'login' %}">
+                {% csrf_token %}
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                        <h4 class="modal-title">Please sign in</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <input type="text" class="form-control login-field" placeholder="Enter your name" id="username" name="username" />
+                        </div>
+                        <div class="form-group">
+                            <input type="password" class="form-control login-field" placeholder="Password" id="password" name="password" />
+                        </div>
+                        <div class="form-group">
+                            <input type="hidden" name="next" value="{{ request.get_full_path }}" />
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Sign in</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    {% endblock login_form %}
+
+    {% block user %}
+    <div class="row">
+        <div class="col-md-12" align="right">
+            <div class="page-header">
+            {% if request.user.id %}
+                Hello, {{ request.user.username }}!
+            {% endif %}
+            &nbsp;&nbsp;&nbsp;&nbsp;
+            {% if request.user.id %}
+                <a href="{% url 'logout' %}">Sign out</a>
+            {% else %}
+                <a data-toggle="modal" data-target="#login">Sign in</a>
+            {% endif %}
+            &nbsp;&nbsp;&nbsp;&nbsp;
+            </div>
+        </div>
+    </div>
+    {% endblock user %}
     <!-- Content -->
     {% block contents %}
 

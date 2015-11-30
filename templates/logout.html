@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="kr">
+<head>
+    <meta charset="utf-8">
+
+    <title>Sign out</title>
+
+    <!-- Bootstrap core CSS -->
+    {% load staticfiles %}
+    <!-- Bootstrap & Flat UI & jQuery import -->
+    <script src="{% static 'js/vendor/jquery.min.js' %}"></script>
+    <script src="{% static 'js/flat-ui.min.js' %}"></script>
+
+    <link href="{% static 'css/vendor/bootstrap.min.css' %}" rel="stylesheet">
+    <link href="{% static 'css/flat-ui.css' %}" rel="stylesheet">
+</head>
+<body>
+    {{ form.errors }}
+    {% if form.errors %}
+    <p>Your username and password didn't match. Please try again.</p>
+    {% endif %}
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                {% if not request.user.is_authenticated %}
+                <h3>You signed out!</h3>
+                {% endif %}
+            </div>
+            <div class="col-md-12">
+                <a href="{% url 'blog:index' %}">Go to the first page</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+

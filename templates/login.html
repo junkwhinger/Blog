@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="kr">
+<head>
+    <meta charset="utf-8">
+
+    <title>Sign in</title>
+
+    <!-- Bootstrap core CSS -->
+    {% load staticfiles %}
+    <!-- Bootstrap & Flat UI & jQuery import -->
+    <script src="{% static 'js/vendor/jquery.min.js' %}"></script>
+    <script src="{% static 'js/flat-ui.min.js' %}"></script>
+
+    <link href="{% static 'css/vendor/bootstrap.min.css' %}" rel="stylesheet">
+    <link href="{% static 'css/flat-ui.css' %}" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-3">&nbsp;</div>
+            <div class="col-md-6">
+                <form method="POST" action="{% url 'login' %}" class="form-signin">
+                    {% csrf_token %}
+                    <div>
+                        <h2 class="form-signin-heading">Please sign in</h2>
+                    </div>
+                    <div class="form-group">
+                        <label for="inputName" class="sr-only">Write your name</label>
+                        <input type="text" id="inputName" class="form-control" placeholder="Write your name" required autofocus name="username" value="{{ request.POST.username }}">
+                    </div>
+                    <div class="form-group">
+                        <label for="inputPassword" class="sr-only">Password</label>
+                        <input type="password" id="inputPassword" class="form-control" placeholder="Password" required name="password">
+                    </div>
+                    <div>
+                        <input type="hidden" name="next" value="{% if next %}{{ next }}{% else %}{% url 'blog:index' %}{% endif %}" />
+                    </div>
+                    <div class="form=group" align="right">
+                        <button type="submit" class="btn btn-lg btn-primary btn-block">Sign in</button>
+                    </div>
+                </form>
+            </div>
+            <div class="col-md-3">&nbsp;</div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12" align="center">
+            {% if form.errors %}
+            <p></p>
+            <p>Your username and password didn't match. Please try again.</p>
+            {% endif %}
+        </div>
+    </div>
+</body>
+</html>
+

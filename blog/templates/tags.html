@@ -3,12 +3,6 @@
         <div class="row">
             <div class="col-md-12">
                 <h4>Tags</h4>
-{#                    {% for tag in post.tags.all %}#}
-{#                    {{ tag.name }}#}
-{#                    {% if not forloop.last %}, {% endif %}#}
-{#                    {% empty %}#}
-{#                    No tags.#}
-{#                    {% endfor %}#}
                 <ul class="list-inline">
                     {% for tag in post.tags.all %}
                         <li>{{ tag.name }}</li>
